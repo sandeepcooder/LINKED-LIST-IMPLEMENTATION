@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// ----------------------------
+// Definition of Node
+// ----------------------------
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// ----------------------------
+// Head Pointer (Global)
+// ----------------------------
+Node* head = NULL;
+
+// ----------------------------
+// Function: Create New Node
+// ----------------------------
+Node* createNode(int value) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// ----------------------------
+// Function: Insert at End
+// ----------------------------
+void insertAtEnd(int value) {
+    Node* newNode = createNode(value);
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        Node* temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = newNode;
+    }
+    printf("✅ Inserted: %d\n", value);
+}
+
+// ----------------------------
+// Function: Delete by Value
+// ----------------------------
+void deleteByValue(int value) {
+    Node *temp = head, *prev = NULL;
+
+    while (temp != NULL && temp->data != value) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("⚠️ Value %d not found.\n", value);
+        return;
+    }
+
+    if (prev == NULL) {
+        head = head->next;
+    } else {
+        prev->next = temp->next;
+    }
+
+    free(temp);
+    printf("❌ Deleted: %d\n", value);
+}
+
+// ----------------------------
+// Function: Traverse List
+// ----------------------------
+void traverseList() {
+    Node* temp = head;
+    printf("🔁 Linked List: ");
+    if (temp == NULL) {
+        printf("Empty\n");
+        return;
+    }
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// ----------------------------
+// Function: Free Entire List
+// ----------------------------
+void freeList() {
+    Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+// ----------------------------
+// Main Function: Menu Driven
+// ----------------------------
+int main() {
+    int choice, value;
+
+    while (1) {
+        printf("\n--- Singly Linked List Menu ---\n");
+        printf("1. Insert\n2. Delete\n3. Traverse\n4. Exit\n");
+        printf("Choose an option: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &value);
+                insertAtEnd(value);
+                break;
+            case 2:
+                printf("Enter value to delete: ");
+                scanf("%d", &value);
+                deleteByValue(value);
+                break;
+            case 3:
+                traverseList();
+                break;
+            case 4:
+                freeList();
+                printf("Exiting...\n");
+                exit(0);
+            default:
+                printf("Invalid option.\n");
+        }
+    }
+
+    return 0;
+}
